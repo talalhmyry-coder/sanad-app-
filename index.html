@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://telegram.org https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://rahf-n8n.app.n8n.cloud; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://telegram.org https://cdn.tailwindcss.com;" />
+  <title>منصة سَنَد | الدعم الأكاديمي 2.0</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    body { font-family: 'Tajawal', system-ui, sans-serif; background-color: #F8FAFC; color: #0F172A; margin: 0; padding: 0; overflow-x: hidden; user-select: none; }
+    .lesson-prose { user-select: text; line-height: 1.85; font-size: 1.03rem; color: #1E293B; }
+    .lesson-prose h3 { color: #065F46; font-weight: 800; font-size: 1.15rem; margin-top: 1.25rem; margin-bottom: 0.5rem; border-right: 4px solid #10B981; padding-right: 0.6rem; }
+    .lesson-prose p { margin-bottom: 0.9rem; }
+    .lesson-prose ul, .lesson-prose ol { padding-right: 1.25rem; margin-bottom: 1rem; list-style-type: disc; }
+    .lesson-prose li { margin-bottom: 0.45rem; }
+    .lesson-prose strong { color: #047857; font-weight: 700; }
+    .perspective-1000 { perspective: 1000px; }
+    .flip-card-inner { position: relative; width: 100%; min-height: 250px; transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+    .flip-card-inner.flipped { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 1rem; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    .flip-card-back { transform: rotateY(180deg); }
+    .screen-fade { animation: fadeIn 0.22s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-16">
+
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 shadow-sm">
+    <div class="max-w-lg mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-extrabold text-lg shadow-sm">س</div>
+        <div>
+          <h1 class="text-base font-extrabold text-slate-900 leading-tight">سَنَد | الدعم الأكاديمي</h1>
+          <p class="text-xs text-emerald-700 font-medium">معك من المحاضرة إلى الاختبار</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <div id="xp-badge" class="hidden items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1 rounded-full text-xs font-extrabold">
+          <span>⚡</span><span id="header-xp">0</span><span>XP</span>
+        </div>
+        <button id="btn-top-back" onclick="navigateBack()" class="hidden items-center gap-1 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition">
+          <span>رجوع</span><span>←</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-lg w-full mx-auto px-4 pt-4">
+
+    <section id="scr-splash" class="screen-fade py-12 flex flex-col items-center justify-center text-center">
+      <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-4xl font-extrabold shadow-lg mb-5 animate-pulse">سَنَد</div>
+      <h2 id="splash-title" class="text-xl font-extrabold text-slate-900 mb-2">جاري التحقق من هويتك الأكاديمية...</h2>
+      <p class="text-sm text-slate-500 max-w-xs mb-6">يتم الآن الاتصال الآمن ببوابة سَنَد السحابية وتجهيز مقرراتك الدراسية.</p>
+      <div id="splash-spinner" class="w-9 h-9 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
+      <div id="splash-error-box" class="hidden mt-4 w-full bg-rose-50 border border-rose-200 rounded-2xl p-4 text-right">
+        <p id="splash-error-text" class="text-sm text-rose-800 font-bold mb-3"></p>
+        <button onclick="initAppSession()" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm shadow">إعادة المحاولة 🔄</button>
+      </div>
+    </section>
+
+    <section id="scr-onboarding" class="hidden screen-fade">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full mb-3">
+          <span>🎓</span><span>بوابة القبول والتسجيل الأكاديمي</span>
+        </div>
+        <h2 class="text-lg font-extrabold text-slate-900 mb-1">مرحباً بك في منصة سَنَد 2.0</h2>
+        <p class="text-xs text-slate-500 mb-5">أكمل بياناتك الأكاديمية لمرة واحدة لنقوم بتخصيص شجرة المقررات والمحاضرات المطابقة لتخصصك ومستواك.</p>
+        <form onsubmit="submitRegistration(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">الاسم الكامل (ثلاثي أو رباعي) *</label>
+            <input id="inp-fullname" type="text" required minlength="5" maxlength="60" placeholder="مثال: محمد أحمد علي قاسم" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:bg-white focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">الكلية *</label>
+            <select id="inp-college" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:bg-white focus:outline-none">
+              <option value="كلية العلوم الإدارية والإنسانية">كلية العلوم الإدارية والإنسانية</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">القسم / التخصص الأكاديمي *</label>
+            <select id="inp-program" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:bg-white focus:outline-none">
+              <option value="ACC">المحاسبة (Accounting)</option>
+              <option value="MGT">إدارة الأعمال (Business Administration)</option>
+              <option value="INT">إدارة الأعمال الدولية (International Business)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">المستوى الدراسي *</label>
+            <div class="grid grid-cols-2 gap-2.5">
+              <button type="button" onclick="selectLevel('L1')" id="lvl-btn-L1" class="py-2.5 px-3 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-emerald-900 text-xs font-bold">المستوى الأول</button>
+              <button type="button" onclick="selectLevel('L2')" id="lvl-btn-L2" class="py-2.5 px-3 rounded-xl border border-slate-300 bg-white text-slate-700 text-xs font-bold">المستوى الثاني</button>
+              <button type="button" onclick="selectLevel('L3')" id="lvl-btn-L3" class="py-2.5 px-3 rounded-xl border border-slate-300 bg-white text-slate-700 text-xs font-bold">المستوى الثالث</button>
+              <button type="button" onclick="selectLevel('L4')" id="lvl-btn-L4" class="py-2.5 px-3 rounded-xl border border-slate-300 bg-white text-slate-700 text-xs font-bold">المستوى الرابع</button>
+            </div>
+            <input type="hidden" id="inp-level" value="L1" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الواتساب (للمتابعة الأكاديمية - اختياري)</label>
+            <input id="inp-phone" type="tel" dir="ltr" placeholder="770000000" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 text-sm text-right text-slate-900 focus:border-emerald-600 focus:bg-white focus:outline-none" />
+          </div>
+          <div id="reg-error" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs font-bold text-rose-700"></div>
+          <button id="btn-submit-reg" type="submit" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-md transition">ابدأ رحلتك الجامعية الآن 🚀</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="scr-dashboard" class="hidden screen-fade space-y-4">
+      <div class="bg-gradient-to-l from-emerald-800 via-emerald-700 to-teal-700 rounded-2xl p-4 text-white shadow-md">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="inline-block bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full text-[11px] font-bold mb-1.5" id="dash-college-badge">كلية العلوم الإدارية والإنسانية</span>
+            <h2 id="dash-student-name" class="text-lg font-extrabold">أهلاً بك يا بطل</h2>
+            <p id="dash-major-level" class="text-xs text-emerald-100 font-medium mt-0.5">قسم المحاسبة — المستوى الأول</p>
+          </div>
+          <button onclick="openEditProfile()" class="text-[11px] bg-white/15 hover:bg-white/25 px-2.5 py-1.5 rounded-xl font-bold backdrop-blur">تغيير المستوى ⚙️</button>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-4">
+            <div><span class="text-emerald-200 block text-[11px]">نقاط الخبرة</span><span id="dash-xp-val" class="font-extrabold text-sm">0 XP</span></div>
+            <div><span class="text-emerald-200 block text-[11px]">الدروس المتقنة</span><span id="dash-completed-val" class="font-extrabold text-sm">0 درس</span></div>
+          </div>
+          <div class="text-left"><span class="text-emerald-200 block text-[11px]">حالة الفصل</span><span class="font-extrabold text-sm">نشط ✅</span></div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between bg-white p-1.5 rounded-xl border border-slate-200">
+        <button onclick="filterTerm('ALL')" id="term-tab-ALL" class="flex-1 py-2 rounded-lg text-xs font-extrabold bg-emerald-600 text-white">كل المقررات</button>
+        <button onclick="filterTerm('T1')" id="term-tab-T1" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-600">الفصل الأول (T1)</button>
+        <button onclick="filterTerm('T2')" id="term-tab-T2" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-600">الفصل الثاني (T2)</button>
+      </div>
+      <div id="courses-container" class="space-y-3"></div>
+    </section>
+
+    <section id="scr-course" class="hidden screen-fade space-y-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+        <span id="course-code-badge" class="inline-block bg-emerald-50 text-emerald-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full mb-1">CAH-ACC-101</span>
+        <h2 id="course-title-heading" class="text-lg font-extrabold text-slate-900">مبادئ المحاسبة (1)</h2>
+        <p class="text-xs text-slate-500 mt-1">اختر الدرس لفتح استوديو المحاضرة، بطاقات التثبيت، وكويز التحدي.</p>
+      </div>
+      <div id="units-container" class="space-y-3"></div>
+    </section>
+
+    <section id="scr-lesson" class="hidden screen-fade space-y-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-1">
+          <span id="lesson-code-badge" class="bg-emerald-50 text-emerald-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full">و1-د1</span>
+          <span id="lesson-cache-badge" class="text-[11px] text-slate-400 font-medium">متصل ومحدث ☁️</span>
+        </div>
+        <h2 id="lesson-title-heading" class="text-base font-extrabold text-slate-900">نشأة المحاسبة وتعريفها وأهدافها</h2>
+      </div>
+
+      <div class="sticky top-[61px] z-20 bg-white/95 backdrop-blur p-1.5 rounded-2xl border border-slate-200 shadow-sm flex gap-1">
+        <button onclick="switchStudioTab('reader')" id="tab-btn-reader" class="flex-1 py-2.5 rounded-xl text-xs font-extrabold bg-emerald-600 text-white transition">📖 الشرح الذكي</button>
+        <button onclick="switchStudioTab('cards')" id="tab-btn-cards" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition">🃏 البطاقات (<span id="tab-cards-count">0</span>)</button>
+        <button onclick="switchStudioTab('quiz')" id="tab-btn-quiz" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition">🏆 كويز التحدي</button>
+      </div>
+
+      <div id="studio-pane-reader" class="space-y-4">
+        <div id="media-bar" class="hidden bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3 flex flex-wrap gap-2"></div>
+        <div class="bg-teal-50/70 border border-teal-200 rounded-2xl p-4">
+          <h3 class="text-xs font-extrabold text-teal-900 mb-1">🎯 خلاصة المحاضرة التمهيدية:</h3>
+          <p id="lesson-overview-text" class="text-xs text-teal-800 leading-relaxed"></p>
+        </div>
+        <article id="lesson-article-body" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm lesson-prose"></article>
+        <button onclick="switchStudioTab('cards')" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-extrabold text-sm shadow-md transition">انتقل إلى بطاقات التثبيت ثلاثية الأبعاد 🃏 ←</button>
+      </div>
+
+      <div id="studio-pane-cards" class="hidden space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-600 mb-2">
+            <span id="fc-progress-label">البطاقة 1 من 4</span>
+            <span id="fc-mastered-label" class="text-emerald-700">تم إتقان: 0</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div id="fc-progress-bar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 25%"></div>
+          </div>
+        </div>
+        <div id="fc-stage" class="perspective-1000 cursor-pointer" onclick="flipCurrentCard()">
+          <div id="fc-inner" class="flip-card-inner">
+            <div class="flip-card-front bg-white border-2 border-slate-200 shadow-sm">
+              <span class="bg-emerald-50 text-emerald-700 text-[11px] font-extrabold px-3 py-1 rounded-full mb-3">سؤال المفهوم (انقر لقلب البطاقة ↺)</span>
+              <p id="fc-question-text" class="text-base font-extrabold text-slate-900 leading-relaxed"></p>
+              <span class="mt-4 text-xs text-slate-400 font-medium">اضغط على البطاقة لكشف الإجابة النموذجية</span>
+            </div>
+            <div class="flip-card-back bg-emerald-50/60 border-2 border-emerald-500 shadow-sm">
+              <span class="bg-emerald-600 text-white text-[11px] font-extrabold px-3 py-1 rounded-full mb-3">الإجابة النموذجية 💡</span>
+              <p id="fc-answer-text" class="text-base font-bold text-emerald-950 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+        <div id="fc-hint-box" class="hidden bg-rose-50 border border-rose-200 rounded-2xl p-4">
+          <h4 class="text-xs font-extrabold text-rose-800 mb-1">📌 القاعدة الذهبية للتثبيت:</h4>
+          <p id="fc-hint-text" class="text-xs text-rose-700 leading-relaxed mb-2.5"></p>
+          <button onclick="advanceAfterHint()" class="w-full py-2 bg-rose-600 text-white rounded-xl text-xs font-bold">فهمت القاعدة، أعد البطاقة لنهاية الجولة 🔄</button>
+        </div>
+        <div id="fc-actions" class="grid grid-cols-2 gap-3">
+          <button onclick="markCardReview()" class="
